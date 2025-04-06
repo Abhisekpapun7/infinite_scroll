@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Infinite Scroll Cards</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      width: 250px;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .loader {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="card-container"></div>
+  <div class="loader" id="loader">Loading more cards...</div>
+
+  <script>
+    const container = document.getElementById('card-container');
+    const loader = document.getElementById('loader');
+    let cardCount = 0;
+    const cardsPerLoad = 10;
+
+    const colors = [
+      '#FF6B6B', '#6BCB77', '#4D96FF', '#FFD93D',
+      '#845EC2', '#FF9671', '#0081CF', '#FFC75F',
+      '#F9F871', '#00C9A7'
+    ];
+
+    function getRandomColor() {
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function createCard(index) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.backgroundColor = getRandomColor();
+      card.innerHTML = `<h3>Card ${index}</h3><p>This is card number ${index}</p>`;
+      return card;
+    }
+
+    function loadCards() {
+      for (let i = 0; i < cardsPerLoad; i++) {
+        cardCount++;
+        container.appendChild(createCard(cardCount));
+      }
+    }
+
+    // Infinite scroll using Intersection Observer
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        loadCards();
+      }
+    }, { threshold: 1.0 });
+
+    observer.observe(loader);
+
+    // Initial load
+    loadCards();
+  </script>
+</body>
+</html>
